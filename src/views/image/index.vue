@@ -34,6 +34,7 @@
                 :lg="4"
                 v-for="(img, index) in images"
                 :key="index"
+                class="image-item"
                 >
                 <el-image
                 style="height: 100px"
@@ -41,9 +42,36 @@
                 fit="cover"
                 >
                 </el-image>
+                <div class="image-box">
+                    <el-button
+                      :loading="img.loading"
+                      :icon="img.is_collected ? 'el-icon-star-on' : 'el-icon-star-off'"
+                      circle
+                      size="mini"
+                      @click="onCollect(img)"
+                    ></el-button>
+                    <!-- <i
+                      v-loading="img.loading"
+                      element-loading-spinner="el-icon-loading"
+                      element-loading-background="rgba(0, 0, 0, 0.8)"
+                      :class="{
+                        'el-icon-star-off': !img.is_collected,
+                        'el-icon-star-on': img.is_collected
+                      }"
+                      @click="onCollect(img)"
+                    ></i> -->
+                    <el-button
+                      :loading="img.loading"
+                      :icon="'el-icon-delete-solid'"
+                      circle
+                      size="mini"
+                      @click="onDelete(img)"
+                    ></el-button>
+                </div>
                 </el-col>
             </el-row>
 
+        </div>
             <!-- 数据分页 -->
             <el-pagination
               background
@@ -54,7 +82,6 @@
               @current-change="onPageChange"
               >
             </el-pagination>
-        </div>
       </div>
       <el-dialog
       title="上传素材"
@@ -81,7 +108,11 @@
 </template>
 
 <script>
-import { getImages } from '@/api/image'
+import {
+  getImages,
+  collectImages,
+  deleteImages
+} from '@/api/image'
 export default {
   name: 'imageIndex',
   data () {
@@ -95,7 +126,7 @@ export default {
         Authorization: `Bearer ${user.token}`
       },
       totalCount: 0,
-      pageSize: 10,
+      pageSize: 12,
       page: 1
     }
   },
@@ -109,8 +140,12 @@ export default {
       getImages({
         page,
         collect: this.collect,
-        pre_page: this.pageSize
+        per_page: this.pageSize
       }).then(res => {
+        const results = res.data.data.results
+        results.forEach(img => {
+          img.loading = false
+        })
         this.images = res.data.data.results
         this.totalCount = res.data.data.total_count
       })
@@ -128,6 +163,30 @@ export default {
     },
     onPageChange (page) {
       this.loadImages(page)
+    },
+    onCollect (img) {
+    //   console.log(img)
+      img.loading = true
+      collectImages(img.id, !img.is_collected).then(res => {
+        img.is_collected = !img.is_collected
+        img.loading = false
+      })
+      // #region
+    //   if (img.is_collected){
+    //     // 如果已收藏，取消收藏
+    //     collectImages(img.id, false)
+    //   } else {
+    //     // 没有收藏，添加收藏
+    //     collectImages(img.id, true)
+    //   }
+    // #endregion
+    },
+    onDelete (img) {
+      this.loading = false
+      deleteImages(img.id).then(res => {
+        this.loadImages(this.page)
+        this.loading = true
+      })
     }
   }
 }
@@ -151,6 +210,20 @@ export default {
         display: flex;
         justify-content: space-between;
     }
+    .image-item{
+        position: relative;
+    }
+    .image-box{
+        height: 40px;
+        background-color: rgba(204, 204, 204, .3);
+        position: absolute;
+        bottom: 4px;
+        left: 10px;
+        right: 10px;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        color: #fff;
+    }
 }
-
 </style>
