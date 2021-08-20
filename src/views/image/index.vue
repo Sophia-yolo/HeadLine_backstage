@@ -10,7 +10,7 @@
                 <el-radio-group
                 v-model="collect"
                 size="mini"
-                @change="onCollectChange"
+                @change="loadImages(1)"
                 >
                     <el-radio-button
                     :label="false"
@@ -43,6 +43,17 @@
                 </el-image>
                 </el-col>
             </el-row>
+
+            <!-- 数据分页 -->
+            <el-pagination
+              background
+              layout="prev, pager, next"
+              :total="totalCount"
+              :page-size="pageSize"
+              :current-page.sync="page"
+              @current-change="onPageChange"
+              >
+            </el-pagination>
         </div>
       </div>
       <el-dialog
@@ -82,28 +93,41 @@ export default {
       dialogUploadVisible: false,
       uploadHeaders: {
         Authorization: `Bearer ${user.token}`
-      }
+      },
+      totalCount: 0,
+      pageSize: 10,
+      page: 1
     }
   },
   created () {
-    this.loadImages(false)
+    this.loadImages(1)
   },
   methods: {
-    loadImages (collect) {
+    loadImages (page = 1) {
+      // 重置高亮页码
+      this.page = page
       getImages({
-        collect
+        page,
+        collect: this.collect,
+        pre_page: this.pageSize
       }).then(res => {
         this.images = res.data.data.results
+        this.totalCount = res.data.data.total_count
       })
-    },
-    onCollectChange (value) {
-      this.loadImages(value)
     },
     onUploadSuccess () {
       // 关闭对话框
       this.dialogUploadVisible = false
       // 更新素材列表
-      this.loadImages(false)
+      this.loadImages(this.page)
+
+      this.$message({
+        type: 'success',
+        message: '上传成功'
+      })
+    },
+    onPageChange (page) {
+      this.loadImages(page)
     }
   }
 }
