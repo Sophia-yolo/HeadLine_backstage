@@ -100,6 +100,7 @@ e<template>
             type="primary"
             icon="el-icon-edit"
             circle
+            @click="$router.push('/layout/publish?id=' + scope.row.id.toString())"
             ></el-button>
             <el-button
                 size="mini"
@@ -168,7 +169,7 @@ export default {
   methods: {
     loadChannels () {
       getArticlesChannels().then(res => {
-        console.log(res)
+        // console.log(res)
         this.channels = res.data.data.channels
       })
     },
@@ -224,12 +225,12 @@ export default {
         color: rgba(15, 23, 42, 0.45);
     }
     .el-form{
-        padding: 1rem 2rem;
-        margin: 0 1rem;
-        margin-top: 1.8rem;
-        padding-top: 1rem;
-        border-radius: 16px;
-        background-color: #fff;
+      padding: 1rem 2rem;
+      margin: 0 1rem;
+      margin-top: 1.8rem;
+      padding-top: 1rem;
+      border-radius: 16px;
+      background-color: #fff;
     }
     .block{
         padding: 1rem 2rem;

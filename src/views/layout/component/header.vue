@@ -19,7 +19,7 @@
                 {{user.name}}
             </span>
         </div>
-        <el-dropdown-menu slot="dropdown" style="margin: 0.5rem 2rem 0 1.5rem">
+        <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>设置</el-dropdown-item>
             <el-dropdown-item @click.native="onLogout">退出</el-dropdown-item>
         </el-dropdown-menu>
