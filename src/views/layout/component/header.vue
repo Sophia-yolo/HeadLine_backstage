@@ -29,6 +29,8 @@
 
 <script>
 import { getUserProfile } from '@/api/user.js'
+import globalBus from '@/utils/global-bus'
+
 export default {
   name: 'Header',
   data () {
@@ -40,6 +42,11 @@ export default {
   created () {
     // 组件初始化，请求获取资料
     this.loadUserProfile()
+    // 事件发布之后，注册函数就会被调用
+    globalBus.$on('update-user', (data) => {
+      this.user.name = data.name
+      this.user.photo = data.photo
+    })
   },
   methods: {
     loadUserProfile () {
