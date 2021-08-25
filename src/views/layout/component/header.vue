@@ -9,7 +9,7 @@
         </div>
         </div>
         <div class="logo">
-        <a href="/"></a>
+          <a href="/"></a>
         </div>
     </div>
     <el-dropdown>
@@ -20,7 +20,7 @@
             </span>
         </div>
         <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>设置</el-dropdown-item>
+            <el-dropdown-item @click.native="onJump">设置</el-dropdown-item>
             <el-dropdown-item @click.native="onLogout">退出</el-dropdown-item>
         </el-dropdown-menu>
     </el-dropdown>
@@ -53,6 +53,9 @@ export default {
       getUserProfile().then(res => {
         this.user = res.data.data
       })
+    },
+    onJump () {
+      this.$router.push('/layout/setting')
     },
     onLogout () {
       this.$confirm('确认退出吗？', '退出提示', {

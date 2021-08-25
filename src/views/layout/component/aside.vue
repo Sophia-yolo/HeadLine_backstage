@@ -163,7 +163,8 @@ a:visited {
     margin-right: 1rem;
   }
 }
-.nav:hover {
+// router-link 点击改变样式
+&.router-link-active {
   background-color: #eff6ff;
 }
 .nav.checked {
